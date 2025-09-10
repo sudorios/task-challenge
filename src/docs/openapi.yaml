@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: Task API
   description: API REST para gestionar tareas y usuarios
-  version: 1.1.0
+  version: 1.2.0
 servers:
   - url: http://localhost:4000/api
 
@@ -15,7 +15,7 @@ paths:
         - bearerAuth: []
       responses:
         "200":
-          description: Lista de tareas
+          description: Lista de tareas del usuario
           content:
             application/json:
               schema:
@@ -24,7 +24,7 @@ paths:
                   $ref: "#/components/schemas/Task"
 
     post:
-      summary: Crear una nueva tarea
+      summary: Crear una nueva tarea asociada al usuario logueado
       tags: [Tasks]
       security:
         - bearerAuth: []
@@ -44,7 +44,7 @@ paths:
 
   /tasks/{id}:
     put:
-      summary: Actualizar una tarea
+      summary: Actualizar una tarea del usuario logueado
       tags: [Tasks]
       security:
         - bearerAuth: []
@@ -69,7 +69,7 @@ paths:
                 $ref: "#/components/schemas/Task"
 
     delete:
-      summary: Eliminar una tarea permanentemente
+      summary: Eliminar permanentemente una tarea del usuario logueado
       tags: [Tasks]
       security:
         - bearerAuth: []
@@ -105,6 +105,26 @@ paths:
                   message:
                     type: string
                     example: "Tarea deshechada"
+
+  /tasks/{id}/done:
+    patch:
+      summary: Marcar o desmarcar una tarea como hecha
+      tags: [Tasks]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Tarea actualizada (hecha o no hecha)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
 
   /auth/register:
     post:
@@ -165,9 +185,13 @@ components:
         hecha:
           type: boolean
           example: false
-        active:
+        activa:
           type: boolean
           example: true
+        user:
+          type: string
+          example: 64d8f0f2c0e5f20012a34abc
+          readOnly: true
 
     TaskInput:
       type: object
@@ -178,7 +202,7 @@ components:
           type: string
         hecha:
           type: boolean
-        active:
+        activa:
           type: boolean
       required:
         - titulo

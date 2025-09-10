@@ -1,21 +1,29 @@
 import Task from '../models/task.model.js';
 
-export async function getTasks() {
-  return await Task.find();
+export async function getTasks(userId) {
+  return await Task.find({ user: userId, activa: true });
 }
 
 export async function createTask(data) {
   return await Task.create(data);
 }
 
-export async function updateTask(id, data) {
-  return await Task.findByIdAndUpdate(id, data, { new: true });
+export async function updateTask(id, data, userId) {
+  return await Task.findOneAndUpdate({ _id: id, user: userId }, data, { new: true });
 }
 
-export async function softDeleteTask(id) {
-    return await Task.findByIdAndUpdate(id, { active: false }, { new: true });
+export async function softDeleteTask(id, userId) {
+  return await Task.findOneAndUpdate({ _id: id, user: userId }, { activa: false }, { new: true });
 }
 
-export async function deleteTask(id) {
-  return await Task.findByIdAndDelete(id);
+export async function deleteTask(id, userId) {
+  return await Task.findOneAndDelete({ _id: id, user: userId });
+}
+
+export async function markTask(id, userId) {
+  const task = await Task.findOne({ _id: id, user: userId });
+  if (!task) throw new Error('Tarea no encontrada');
+  task.hecha = !task.hecha;
+  await task.save();
+  return task;
 }

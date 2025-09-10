@@ -12,6 +12,9 @@ export async function register(req, res, next) {
       token,
     });
   } catch (err) {
+    if (err.code === 11000) {
+      return res.status(400).json({ message: 'El correo ya está registrado' });
+    }
     next(err);
   }
 }
@@ -20,6 +23,10 @@ export async function login(req, res, next) {
   try {
     const { email, password } = req.body;
     const user = await authService.loginUser({ email, password });
+    if (!user) {
+      return res.status(401).json({ message: 'Credenciales inválidas' });
+    }
+
     const token = generateToken({ id: user._id, email: user.email });
     res.json({
       message: 'Login exitoso',
@@ -27,6 +34,9 @@ export async function login(req, res, next) {
       token,
     });
   } catch (err) {
+    if (err.message === 'Credenciales inválidas') {
+      return res.status(401).json({ message: err.message });
+    }
     next(err);
   }
 }

@@ -1,9 +1,8 @@
 import { Router } from 'express';
+import taskRoutes from './task.routes.js';
 
 const router = Router();
 
-router.get('/', (req, res) => {
-  res.json({ message: 'API funcionando' });
-});
+router.use('/tasks', taskRoutes);
 
 export default router;

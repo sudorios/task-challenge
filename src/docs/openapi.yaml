@@ -1,16 +1,18 @@
 openapi: 3.0.0
 info:
   title: Task API
-  description: API REST para gestionar tareas
-  version: 1.0.0
+  description: API REST para gestionar tareas y usuarios
+  version: 1.1.0
 servers:
   - url: http://localhost:4000/api
 
 paths:
   /tasks:
     get:
-      summary: Obtener todas las tareas
+      summary: Obtener todas las tareas del usuario logueado
       tags: [Tasks]
+      security:
+        - bearerAuth: []
       responses:
         "200":
           description: Lista de tareas
@@ -24,6 +26,8 @@ paths:
     post:
       summary: Crear una nueva tarea
       tags: [Tasks]
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -42,6 +46,8 @@ paths:
     put:
       summary: Actualizar una tarea
       tags: [Tasks]
+      security:
+        - bearerAuth: []
       parameters:
         - name: id
           in: path
@@ -63,8 +69,10 @@ paths:
                 $ref: "#/components/schemas/Task"
 
     delete:
-      summary: Eliminar una tarea
+      summary: Eliminar una tarea permanentemente
       tags: [Tasks]
+      security:
+        - bearerAuth: []
       parameters:
         - name: id
           in: path
@@ -75,7 +83,72 @@ paths:
         "204":
           description: Tarea eliminada
 
+    patch:
+      summary: Mover tarea a papelera (soft delete)
+      tags: [Tasks]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Tarea deshechada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Tarea deshechada"
+
+  /auth/register:
+    post:
+      summary: Registrar nuevo usuario
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInput"
+      responses:
+        "201":
+          description: Usuario registrado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+
+  /auth/login:
+    post:
+      summary: Login de usuario
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInput"
+      responses:
+        "200":
+          description: Login exitoso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     Task:
       type: object
@@ -92,9 +165,9 @@ components:
         hecha:
           type: boolean
           example: false
-        estado:
-          type: string
-          example: pendiente
+        active:
+          type: boolean
+          example: true
 
     TaskInput:
       type: object
@@ -105,8 +178,39 @@ components:
           type: string
         hecha:
           type: boolean
-        estado:
-          type: string
+        active:
+          type: boolean
       required:
         - titulo
         - descripcion
+
+    UserInput:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+      required:
+        - email
+        - password
+
+    AuthResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Login exitoso"
+        user:
+          type: object
+          properties:
+            id:
+              type: string
+              example: 64d8f1b2c0e5f20012a34bcd
+            email:
+              type: string
+              example: usuario@correo.com
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...

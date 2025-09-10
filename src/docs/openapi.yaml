@@ -1,0 +1,112 @@
+openapi: 3.0.0
+info:
+  title: Task API
+  description: API REST para gestionar tareas
+  version: 1.0.0
+servers:
+  - url: http://localhost:4000/api
+
+paths:
+  /tasks:
+    get:
+      summary: Obtener todas las tareas
+      tags: [Tasks]
+      responses:
+        "200":
+          description: Lista de tareas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+
+    post:
+      summary: Crear una nueva tarea
+      tags: [Tasks]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskInput"
+      responses:
+        "201":
+          description: Tarea creada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+
+  /tasks/{id}:
+    put:
+      summary: Actualizar una tarea
+      tags: [Tasks]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskInput"
+      responses:
+        "200":
+          description: Tarea actualizada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+
+    delete:
+      summary: Eliminar una tarea
+      tags: [Tasks]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Tarea eliminada
+
+components:
+  schemas:
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 64d8f1b2c0e5f20012a34bcd
+        titulo:
+          type: string
+          example: Comprar pan
+        descripcion:
+          type: string
+          example: Ir a la panadería de la esquina
+        hecha:
+          type: boolean
+          example: false
+        estado:
+          type: string
+          example: pendiente
+
+    TaskInput:
+      type: object
+      properties:
+        titulo:
+          type: string
+        descripcion:
+          type: string
+        hecha:
+          type: boolean
+        estado:
+          type: string
+      required:
+        - titulo
+        - descripcion

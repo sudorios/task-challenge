@@ -28,6 +28,16 @@ export async function updateTask(req, res, next) {
   }
 }
 
+export async function softDeleteTask(req, res, next){
+    try {
+        const { id } = req.params;
+        await taskService.softDeleteTask(id);
+        res.json({message: 'Tarea deshechada'});    
+    } catch(err) {
+        next(err);
+    }
+}
+
 export async function deleteTask(req, res, next) {
   try {
     const { id } = req.params;

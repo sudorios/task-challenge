@@ -12,6 +12,10 @@ export async function updateTask(id, data) {
   return await Task.findByIdAndUpdate(id, data, { new: true });
 }
 
+export async function softDeleteTask(id) {
+    return await Task.findByIdAndUpdate(id, { active: false }, { new: true });
+}
+
 export async function deleteTask(id) {
   return await Task.findByIdAndDelete(id);
 }

@@ -122,12 +122,3 @@ src/
 - `npm run dev`: inicia el servidor con `node --watch src/server.js`.
 
 > No hay script `npm start` definido. Si lo necesitas, agrégalo en `package.json`.
-
----
-
-## 🔎 Notas y buenas prácticas
-
-- Usa una `JWT_SECRET` larga y aleatoria en producción.
-- No subas tu `.env` a control de versiones.
-- Asegúrate de que MongoDB esté accesible desde `MONGODB_URI`.
-

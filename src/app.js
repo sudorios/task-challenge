@@ -12,7 +12,23 @@ const __dirname = path.dirname(__filename);
 const swaggerDocument = YAML.load(path.join(__dirname, './docs/openapi.yaml'));
 const app = express();
 
-app.use(cors());
+
+const allowedOrigins = [
+    process.env.FRONTEND_URL_DEV,
+    process.env.BACKEND_URL_PROD
+];
+
+app.use(cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('No permitido por CORS'));
+      }
+    },
+    credentials: true
+}));
+
 app.use(express.json());
 app.use(morgan('dev'));
 

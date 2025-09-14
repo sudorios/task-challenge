@@ -27,3 +27,8 @@ export async function markTask(id, userId) {
   await task.save();
   return task;
 }
+
+
+export async function getInactiveTasks(userId) {
+  return await Task.find({ user: userId, activa: false });
+}

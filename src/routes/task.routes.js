@@ -7,6 +7,7 @@ const router = Router();
 router.use(authMiddleware);
 
 router.get('/', taskController.getTasks);
+router.get('/inactive', taskController.getInactiveTasks); 
 router.post('/', taskController.createTask);
 router.put('/:id', taskController.updateTask);
 router.delete('/:id', taskController.deleteTask);

@@ -89,3 +89,18 @@ export async function markTask(req, res, next) {
     next(err);
   }
 }
+
+export async function getInactiveTasks(req, res, next) {
+  try {
+    const userId = req.user.id;
+    const tasks = await taskService.getInactiveTasks(userId);
+
+    if (!tasks || tasks.length === 0) {
+      return res.status(404).json({ message: 'No hay tareas inactivas para este usuario' });
+    }
+
+    res.json(tasks);
+  } catch (err) {
+    next(err);
+  }
+}

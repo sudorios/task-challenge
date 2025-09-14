@@ -8,4 +8,5 @@ export const env = {
   MONGO_URI: process.env.MONGO_URI,
   BACKEND_URL_DEV: process.env.BACKEND_URL_DEV,
   BACKEND_URL_PROD: process.env.BACKEND_URL_PROD,
+  FRONTEND_URL_DEV: process.env.FRONTEND_URL_DEV
 };
